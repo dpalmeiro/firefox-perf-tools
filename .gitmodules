@@ -1,0 +1,3 @@
+[submodule "external/browsertime"]
+	path = external/browsertime
+	url = https://github.com/sitespeedio/browsertime.git

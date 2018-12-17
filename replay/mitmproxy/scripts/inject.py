@@ -9,15 +9,10 @@ jsctr   = 0;
 injectctr=0;
 
 def load(l):
-    ctx.log.info("Registering option 'siteurl'")
-    l.add_option("siteurl", str, "ERROR", "Website being visited.")
-
     ctx.log.info("Registering option 'savecontent'")
     l.add_option("savecontent", bool, False, "save all js and html content.")
 
 def configure(updated):
-    if "siteurl" in updated:
-      ctx.log.info("siteurl value: %s" % ctx.options.siteurl)
     if "savecontent" in updated:
       ctx.log.info("savecontent value: %s" % ctx.options.savecontent)
 
@@ -26,7 +21,6 @@ def response(flow):
   millis = int(round(time.time() * 1000))
 
   #---------Inject into HTML----------#
-  #if ctx.options.siteurl == flow.request.pretty_url:
   if "content-type" in flow.response.headers:
     if 'text/html' in flow.response.headers["content-type"]:
       if injectctr == 0:

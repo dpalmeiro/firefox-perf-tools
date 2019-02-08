@@ -1,6 +1,5 @@
 import time
 import os
-from bs4 import BeautifulSoup
 from mitmproxy import http
 from mitmproxy import ctx
 
@@ -26,15 +25,14 @@ def response(flow):
       if injectctr == 0:
         flow.response.decode()
 
-        html = BeautifulSoup(flow.response.content)
-        firstScript = html.find("script")
+        html = bytes(flow.response.content).decode("utf-8")
+        firstScriptIndex = html.find("<script>")
 
-        with open("scripts/deterministic.js", "r") as jsfile:
+        with open("scripts/catapult/deterministic.js", "r") as jsfile:
           js = jsfile.read().replace("REPLACE_LOAD_TIMESTAMP",str(millis));
-          script = html.new_tag("script")
-          script.append(js);
-          firstScript.insert_before(script)
-          flow.response.content = bytes(str(html), "utf-8")
+          new_html = html[:firstScriptIndex] + "<script>" + js + "</script>" + html[firstScriptIndex:]
+          flow.response.content = bytes(new_html, "utf-8")
+
       injectctr=injectctr+1
 
 
